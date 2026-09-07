@@ -6,7 +6,7 @@
 
 > Educational parody project. Not affiliated with, endorsed by, or connected to Netflix, Inc. in any way.
 
-https://github.com/user-attachments/assets/b8bce8e0-3fcf-4e8e-867f-631193a5f300
+https://github.com/user-attachments/assets/1a28eac8-a70d-425b-864e-a8b8a051e135
 
 ## 📌 About the Project
 
