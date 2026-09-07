@@ -1,0 +1,44 @@
+{% load static %}
+<nav class="navbar navbar-expand-lg navbar-dark netflix-navbar" id="mainNavbar">
+    <div class="container-fluid px-4">
+        <a class="navbar-brand fw-bold" href="{% url 'home' %}">
+            <i class="fas fa-play-circle"></i> Netflix Tudum
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto ms-lg-4">
+                <li class="nav-item"><a class="nav-link {% if active == 'home' %}active{% endif %}" href="{% url 'home' %}">Home</a></li>
+                <li class="nav-item"><a class="nav-link {% if active == 'mylist' %}active{% endif %}" href="{% url 'my_list' %}">My List</a></li>
+                <li class="nav-item"><a class="nav-link {% if active == 'about' %}active{% endif %}" href="{% url 'about' %}">About</a></li>
+                <li class="nav-item"><a class="nav-link {% if active == 'contact' %}active{% endif %}" href="{% url 'contact' %}">Contact</a></li>
+                <li class="nav-item"><a class="nav-link {% if active == 'form' %}active{% endif %}" href="{% url 'form' %}">Feedback</a></li>
+            </ul>
+
+            <form class="navbar-search me-lg-3 mb-2 mb-lg-0" role="search" action="{% url 'home' %}" method="get">
+                <i class="fas fa-search search-icon"></i>
+                <input type="search" name="q" id="globalSearchInput" class="navbar-search-input" placeholder="Search shows, genres...">
+            </form>
+
+            <ul class="navbar-nav">
+                {% if request.user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" id="userMenu" data-bs-toggle="dropdown">
+                            <span class="user-avatar"><i class="fas fa-user"></i></span>
+                            {{ request.user.first_name|default:request.user.username }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark">
+                            <li><a class="dropdown-item" href="{% url 'my_list' %}"><i class="fas fa-bookmark me-2"></i>My List</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt me-2"></i>Sign Out</a></li>
+                        </ul>
+                    </li>
+                {% else %}
+                    <li class="nav-item"><a class="nav-link {% if active == 'register' %}active{% endif %}" href="{% url 'register' %}">Register</a></li>
+                    <li class="nav-item"><a class="btn btn-danger btn-sm ms-lg-2 px-3 {% if active == 'login' %}active{% endif %}" href="{% url 'login' %}">Sign In</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>

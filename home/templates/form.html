@@ -5,221 +5,151 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Netflix Tudum Feedback Form">
-    <title>Feedback Form - Netflix Tudum</title>
+    <title>Feedback - Netflix Tudum</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body class="bg-dark text-white">
-    <!-- NAVBAR -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid px-4">
-            <a class="navbar-brand fw-bold" href="{% url 'home' %}">
-                <i class="fas fa-play-circle" style="color: #e50914;"></i> Netflix Tudum
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">About</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}">Contact</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'register' %}">Register</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
 
-    <!-- PAGE HEADER -->
-    <div class="bg-dark text-white py-5" style="background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);">
-        <div class="container">
-            <h1 class="display-4 fw-bold mb-3">Feedback Form</h1>
-            <p class="lead">Help us improve your Netflix Tudum experience</p>
-        </div>
+{% include "_navbar.html" with active="form" %}
+
+<div class="page-header reveal in-view">
+    <div class="container">
+        <h1 class="display-4 fw-bold mb-3">Feedback</h1>
+        <p class="lead">Help us improve your Netflix Tudum experience</p>
     </div>
+</div>
 
-    <!-- FEEDBACK FORM SECTION -->
-    <main class="container-fluid bg-dark text-white">
-        <section class="content-section">
-            <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-lg-8">
-                        <div class="card bg-secondary border-0 rounded-lg">
-                            <div class="card-body p-5">
-                                <form>
-                                    <!-- USER INFO -->
-                                    <div class="mb-4">
-                                        <h5 class="fw-bold mb-3">Your Information</h5>
-                                        <div class="row g-3">
-                                            <div class="col-md-6">
-                                                <label for="fullName" class="form-label">Full Name</label>
-                                                <input type="text" class="form-control bg-dark border border-secondary text-white" id="fullName" placeholder="Enter your name" required>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label for="email" class="form-label">Email Address</label>
-                                                <input type="email" class="form-control bg-dark border border-secondary text-white" id="email" placeholder="your@email.com" required>
-                                            </div>
+<main class="container-fluid bg-dark text-white">
+    <section class="content-section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 reveal">
+
+                    {% if messages %}
+                      {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                      {% endfor %}
+                    {% endif %}
+
+                    <div class="card auth-card">
+                        <div class="card-body p-5">
+                            <form method="POST" action="{% url 'form' %}">
+                                {% csrf_token %}
+                                <div class="mb-4">
+                                    <h5 class="fw-bold mb-3">Your Information</h5>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label for="fullName" class="form-label">Full Name</label>
+                                            <input type="text" name="fullName" class="form-control bg-dark border border-secondary text-white" id="fullName" placeholder="Enter your name" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="email" class="form-label">Email Address</label>
+                                            <input type="email" name="email" class="form-control bg-dark border border-secondary text-white" id="email" placeholder="your@email.com" required>
                                         </div>
                                     </div>
+                                </div>
 
-                                    <!-- FEEDBACK TYPE -->
-                                    <div class="mb-4">
-                                        <h5 class="fw-bold mb-3">Feedback Type</h5>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="feedbackType" id="bug" value="bug">
-                                            <label class="form-check-label" for="bug">
-                                                <i class="fas fa-bug text-danger me-2"></i>Bug Report
-                                            </label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="feedbackType" id="suggestion" value="suggestion" checked>
-                                            <label class="form-check-label" for="suggestion">
-                                                <i class="fas fa-lightbulb text-warning me-2"></i>Suggestion/Feature Request
-                                            </label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="feedbackType" id="compliment" value="compliment">
-                                            <label class="form-check-label" for="compliment">
-                                                <i class="fas fa-heart text-danger me-2"></i>Compliment
-                                            </label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="feedbackType" id="other" value="other">
-                                            <label class="form-check-label" for="other">
-                                                <i class="fas fa-comment text-info me-2"></i>Other
-                                            </label>
-                                        </div>
-                                    </div>
-
-                                    <!-- RATING -->
-                                    <div class="mb-4">
-                                        <h5 class="fw-bold mb-3">How would you rate your experience?</h5>
-                                        <div class="btn-group" role="group">
-                                            <input type="radio" class="btn-check" name="rating" id="rating1" value="1">
-                                            <label class="btn btn-outline-danger" for="rating1">
-                                                <i class="fas fa-star"></i> Poor
-                                            </label>
-
-                                            <input type="radio" class="btn-check" name="rating" id="rating2" value="2">
-                                            <label class="btn btn-outline-danger" for="rating2">
-                                                <i class="fas fa-star"></i><i class="fas fa-star"></i> Fair
-                                            </label>
-
-                                            <input type="radio" class="btn-check" name="rating" id="rating3" value="3" checked>
-                                            <label class="btn btn-outline-danger" for="rating3">
-                                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i> Good
-                                            </label>
-
-                                            <input type="radio" class="btn-check" name="rating" id="rating4" value="4">
-                                            <label class="btn btn-outline-danger" for="rating4">
-                                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i> Very Good
-                                            </label>
-
-                                            <input type="radio" class="btn-check" name="rating" id="rating5" value="5">
-                                            <label class="btn btn-outline-danger" for="rating5">
-                                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i> Excellent
-                                            </label>
-                                        </div>
-                                    </div>
-
-                                    <!-- CATEGORY -->
-                                    <div class="mb-4">
-                                        <label for="category" class="form-label fw-bold">Related To</label>
-                                        <select class="form-select bg-dark border border-secondary text-white" id="category" required>
-                                            <option selected disabled>Select a category</option>
-                                            <option>Content Quality</option>
-                                            <option>Streaming Performance</option>
-                                            <option>User Interface</option>
-                                            <option>Video Quality</option>
-                                            <option>Mobile App</option>
-                                            <option>Recommendations</option>
-                                            <option>Subtitles & Dubbing</option>
-                                            <option>Billing</option>
-                                            <option>Other</option>
-                                        </select>
-                                    </div>
-
-                                    <!-- MESSAGE -->
-                                    <div class="mb-4">
-                                        <label for="message" class="form-label fw-bold">Your Feedback</label>
-                                        <textarea class="form-control bg-dark border border-secondary text-white" id="message" rows="6" placeholder="Tell us what you think..." required></textarea>
-                                        <small class="text-muted">Please be detailed and specific</small>
-                                    </div>
-
-                                    <!-- ATTACHMENTS -->
-                                    <div class="mb-4">
-                                        <label for="attachment" class="form-label fw-bold">Attach Screenshot (Optional)</label>
-                                        <input type="file" class="form-control bg-dark border border-secondary text-white" id="attachment">
-                                        <small class="text-muted">Max file size: 5MB (PNG, JPG)</small>
-                                    </div>
-
-                                    <!-- CONSENT -->
-                                    <div class="mb-3 form-check">
-                                        <input type="checkbox" class="form-check-input" id="consent" checked>
-                                        <label class="form-check-label text-muted" for="consent">
-                                            You may contact me regarding my feedback
+                                <div class="mb-4">
+                                    <h5 class="fw-bold mb-3">Feedback Type</h5>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="feedbackType" id="bug" value="bug">
+                                        <label class="form-check-label" for="bug">
+                                            <i class="fas fa-bug text-danger me-2"></i>Bug Report
                                         </label>
                                     </div>
-
-                                    <!-- BUTTONS -->
-                                    <div class="d-grid gap-2">
-                                        <button type="submit" class="btn btn-danger btn-lg fw-bold">
-                                            <i class="fas fa-paper-plane me-2"></i> Submit Feedback
-                                        </button>
-                                        <button type="reset" class="btn btn-outline-secondary btn-lg fw-bold">
-                                            <i class="fas fa-redo me-2"></i> Clear Form
-                                        </button>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="feedbackType" id="suggestion" value="suggestion" checked>
+                                        <label class="form-check-label" for="suggestion">
+                                            <i class="fas fa-lightbulb text-warning me-2"></i>Suggestion / Feature Request
+                                        </label>
                                     </div>
-                                </form>
-                            </div>
-                        </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="feedbackType" id="compliment" value="compliment">
+                                        <label class="form-check-label" for="compliment">
+                                            <i class="fas fa-heart text-danger me-2"></i>Compliment
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="feedbackType" id="other" value="other">
+                                        <label class="form-check-label" for="other">
+                                            <i class="fas fa-comment text-info me-2"></i>Other
+                                        </label>
+                                    </div>
+                                </div>
 
-                        <!-- THANK YOU MESSAGE -->
-                        <div class="alert alert-success mt-4 text-center">
-                            <i class="fas fa-check-circle me-2"></i>
-                            Thank you for your feedback! It helps us improve Netflix Tudum.
+                                <div class="mb-4">
+                                    <h5 class="fw-bold mb-3">How would you rate your experience?</h5>
+                                    <div class="btn-group flex-wrap" role="group">
+                                        <input type="radio" class="btn-check" name="rating" id="rating1" value="1">
+                                        <label class="btn btn-outline-danger" for="rating1">Poor</label>
+
+                                        <input type="radio" class="btn-check" name="rating" id="rating2" value="2">
+                                        <label class="btn btn-outline-danger" for="rating2">Fair</label>
+
+                                        <input type="radio" class="btn-check" name="rating" id="rating3" value="3" checked>
+                                        <label class="btn btn-outline-danger" for="rating3">Good</label>
+
+                                        <input type="radio" class="btn-check" name="rating" id="rating4" value="4">
+                                        <label class="btn btn-outline-danger" for="rating4">Very Good</label>
+
+                                        <input type="radio" class="btn-check" name="rating" id="rating5" value="5">
+                                        <label class="btn btn-outline-danger" for="rating5">Excellent</label>
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="category" class="form-label fw-bold">Related To</label>
+                                    <select name="category" class="form-select bg-dark border border-secondary text-white" id="category" required>
+                                        <option selected disabled value="">Select a category</option>
+                                        <option>Content Quality</option>
+                                        <option>Streaming Performance</option>
+                                        <option>User Interface</option>
+                                        <option>Search & My List</option>
+                                        <option>Mobile Experience</option>
+                                        <option>Recommendations</option>
+                                        <option>Account & Login</option>
+                                        <option>Other</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="message" class="form-label fw-bold">Your Feedback</label>
+                                    <textarea name="message" class="form-control bg-dark border border-secondary text-white" id="message" rows="6" placeholder="Tell us what you think..." required></textarea>
+                                    <small class="text-muted">Please be detailed and specific</small>
+                                </div>
+
+                                <div class="mb-3 form-check">
+                                    <input type="checkbox" name="consent" class="form-check-input" id="consent" checked>
+                                    <label class="form-check-label text-muted" for="consent">
+                                        You may contact me regarding my feedback
+                                    </label>
+                                </div>
+
+                                <div class="d-grid gap-2">
+                                    <button type="submit" class="btn btn-danger btn-lg fw-bold">
+                                        <i class="fas fa-paper-plane me-2"></i> Submit Feedback
+                                    </button>
+                                    <button type="reset" class="btn btn-outline-secondary btn-lg fw-bold">
+                                        <i class="fas fa-redo me-2"></i> Clear Form
+                                    </button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- FOOTER -->
-    <footer class="bg-dark text-white py-5 border-top border-secondary mt-5">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4 mb-4">
-                    <h5><i class="fas fa-play-circle"></i> Netflix Tudum</h5>
-                    <p class="text-muted">Premium entertainment at your fingertips</p>
-                </div>
-                <div class="col-md-4 mb-4">
-                    <h6>Quick Links</h6>
-                    <ul class="list-unstyled">
-                        <li><a href="{% url 'home' %}" class="text-muted text-decoration-none">Home</a></li>
-                        <li><a href="{% url 'about' %}" class="text-muted text-decoration-none">About</a></li>
-                        <li><a href="{% url 'contact' %}" class="text-muted text-decoration-none">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-4 mb-4">
-                    <h6>Follow Us</h6>
-                    <div>
-                        <a href="#" class="text-danger me-3"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="text-danger me-3"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="text-danger me-3"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="text-danger"><i class="fab fa-youtube"></i></a>
-                    </div>
-                </div>
-            </div>
-            <hr class="bg-secondary">
-            <div class="text-center text-muted">
-                <p>&copy; 2026 Netflix Tudum. All rights reserved.</p>
             </div>
         </div>
-    </footer>
+    </section>
+</main>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+{% include "_footer.html" %}
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{% static 'js/main.js' %}"></script>
 </body>
 </html>

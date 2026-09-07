@@ -7,279 +7,204 @@
     <meta name="description" content="Netflix Tudum - Your ultimate streaming experience">
     <title>Netflix Tudum - Premium Entertainment</title>
 
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- Font Awesome Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    
-    <!-- Your CSS -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
-
 <body>
-    <!-- HERO SECTION -->
-    <section class="hero-section" style="background-image: url('https://images.unsplash.com/photo-1614851099511-773084f6911d?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');">
-        <!-- NAVBAR -->
-        <nav class="navbar navbar-expand-lg navbar-dark">
-            <div class="container-fluid px-4">
-                <a class="navbar-brand fw-bold" href="{% url 'home' %}">
-                    <i class="fas fa-play-circle"></i> Netflix Tudum
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item"><a class="nav-link active" href="{% url 'home' %}">Home</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">About</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}">Contact</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'register' %}">Register</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
 
-        {% if messages %}
-  {% for message in messages %}
-    <div class="alert alert-{{ message.tags }} text-center m-0 rounded-0">
-        {{ message }}
+{% include "_navbar.html" with active="home" %}
+
+{% if messages %}
+    <div class="container-fluid px-4 pt-3">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
     </div>
-  {% endfor %}
 {% endif %}
 
+{% if hero_shows %}
+<section class="hero-section" id="heroSection">
+    {% for show in hero_shows %}
+    <div class="hero-slide {% if forloop.first %}active{% endif %}" data-index="{{ forloop.counter0 }}"
+         style="background-image: linear-gradient(180deg, rgba(15,15,15,0.15) 0%, rgba(15,15,15,0.55) 65%, #0f0f0f 100%), url('{{ show.backdrop_url|default:show.poster_url }}');">
+        <div class="hero-overlay d-flex align-items-end">
+            <div class="hero-content container pb-5">
+                <span class="hero-tag"><i class="fas fa-star"></i> Featured</span>
+                <h1 class="display-3 fw-bold mb-2">{{ show.title }}</h1>
+                <p class="lead mb-2">{{ show.tagline }}</p>
+                <div class="hero-meta mb-3">
+                    <span class="match-badge">{{ show.match_score }}% Match</span>
+                    <span>{{ show.release_year }}</span>
+                    <span class="maturity-badge">{{ show.maturity_rating }}</span>
+                    <span>{{ show.seasons }} Season{{ show.seasons|pluralize }}</span>
+                </div>
+                <p class="hero-description">{{ show.description|truncatewords:28 }}</p>
+                <div class="d-flex flex-wrap gap-2 mt-3">
+                    <a href="{{ show.netflix_url }}" target="_blank" rel="noopener" class="btn btn-light btn-lg fw-bold">
+                        <i class="fas fa-play me-2"></i>Play
+                    </a>
+                    <button type="button" class="btn btn-outline-light btn-lg info-btn" data-id="{{ show.id }}">
+                        <i class="fas fa-circle-info me-2"></i>More Info
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
 
-        <!-- HERO CONTENT -->
-        <div class="hero-overlay d-flex align-items-center justify-content-center">
-            <div class="hero-content text-center text-white">
-                <h1 class="display-3 fw-bold mb-4">Netflix Tudum</h1>
-                <p class="lead mb-4">Experience Entertainment Like Never Before</p>
-                <a href="#trending" class="btn btn-danger btn-lg">
-                    <i class="fas fa-play"></i> Explore Now
-                </a>
+    {% if hero_shows|length > 1 %}
+    <div class="hero-indicators">
+        {% for show in hero_shows %}
+        <button type="button" class="hero-dot {% if forloop.first %}active{% endif %}" data-index="{{ forloop.counter0 }}"></button>
+        {% endfor %}
+    </div>
+    {% endif %}
+</section>
+{% else %}
+<section class="hero-section-empty d-flex align-items-center justify-content-center text-center text-white">
+    <div>
+        <h1 class="display-4 fw-bold">Netflix Tudum</h1>
+        <p class="lead">Run <code>python manage.py seed_shows</code> to load the catalog.</p>
+    </div>
+</section>
+{% endif %}
+
+<main class="bg-dark text-white">
+    <section class="content-section pt-4">
+        <div class="container-fluid px-4">
+
+            <!-- GENRE CHIPS -->
+            <div class="genre-chip-row mb-4" id="genreChips">
+                <a href="#" class="genre-chip active" data-genre="all">All</a>
+                {% for value, label in genres %}
+                <a href="#row-{{ label|slugify }}" class="genre-chip" data-genre="{{ value }}">{{ label }}</a>
+                {% endfor %}
+            </div>
+
+            <div class="text-center py-5 d-none" id="noResults">
+                <i class="fas fa-magnifying-glass fa-3x mb-3 text-muted"></i>
+                <h4>No matches found</h4>
+                <p class="text-muted">Try a different title or clear your search.</p>
+            </div>
+
+            <div id="rowsWrapper">
+            {% if top10 %}
+            <div class="show-row-section" id="row-top-10">
+                <h3 class="section-heading">Top 10 in Netflix Tudum Today</h3>
+                <div class="row-scroll-wrapper">
+                    <button class="row-arrow row-arrow-left" aria-label="Scroll left"><i class="fas fa-chevron-left"></i></button>
+                    <div class="row-scroll">
+                        {% for show in top10 %}
+                            {% include "_top10_card.html" with show=show %}
+                        {% endfor %}
+                    </div>
+                    <button class="row-arrow row-arrow-right" aria-label="Scroll right"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+            {% endif %}
+
+            {% for row in genre_rows %}
+            <div class="show-row-section" id="row-{{ row.label|slugify }}">
+                <h3 class="section-heading">{{ row.label }}</h3>
+                <div class="row-scroll-wrapper">
+                    <button class="row-arrow row-arrow-left" aria-label="Scroll left"><i class="fas fa-chevron-left"></i></button>
+                    <div class="row-scroll">
+                        {% for show in row.shows %}
+                            {% include "_show_card.html" with show=show %}
+                        {% endfor %}
+                    </div>
+                    <button class="row-arrow row-arrow-right" aria-label="Scroll right"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+            {% endfor %}
+            </div>
+
+            <!-- STATS STRIP -->
+            <div class="stats-strip row text-center g-4 my-5 py-4">
+                <div class="col-6 col-md-3">
+                    <h3 class="fw-bold text-danger mb-0">{{ total_shows }}+</h3>
+                    <p class="text-muted mb-0">Titles in the library</p>
+                </div>
+                <div class="col-6 col-md-3">
+                    <h3 class="fw-bold text-danger mb-0">10</h3>
+                    <p class="text-muted mb-0">Genres to explore</p>
+                </div>
+                <div class="col-6 col-md-3">
+                    <h3 class="fw-bold text-danger mb-0">250M+</h3>
+                    <p class="text-muted mb-0">Subscribers worldwide</p>
+                </div>
+                <div class="col-6 col-md-3">
+                    <h3 class="fw-bold text-danger mb-0">190+</h3>
+                    <p class="text-muted mb-0">Countries served</p>
+                </div>
+            </div>
+
+            <!-- FAQ -->
+            <h3 class="section-heading">Frequently Asked Questions</h3>
+            <div class="accordion mb-5 reveal" id="faq">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#q1">
+                            <i class="fas fa-question-circle me-2"></i> What is Netflix Tudum?
+                        </button>
+                    </h2>
+                    <div id="q1" class="accordion-collapse collapse show" data-bs-parent="#faq">
+                        <div class="accordion-body">
+                            Netflix Tudum is a demo streaming catalog offering thousands of shows and movies, including originals, documentaries, and more. Browse, search, and build your own watchlist!
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#q2">
+                            <i class="fas fa-question-circle me-2"></i> How does "My List" work?
+                        </button>
+                    </h2>
+                    <div id="q2" class="accordion-collapse collapse" data-bs-parent="#faq">
+                        <div class="accordion-body">
+                            Click the <i class="fas fa-plus"></i> icon on any title to save it to My List, stored right in your browser. Visit the My List page anytime to see everything you've saved.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#q3">
+                            <i class="fas fa-question-circle me-2"></i> Can I search for a specific show?
+                        </button>
+                    </h2>
+                    <div id="q3" class="accordion-collapse collapse" data-bs-parent="#faq">
+                        <div class="accordion-body">
+                            Yes! Use the search bar in the navigation to filter the catalog instantly by title, or use the genre chips to jump straight to a category.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#q4">
+                            <i class="fas fa-question-circle me-2"></i> Is this the real Netflix?
+                        </button>
+                    </h2>
+                    <div id="q4" class="accordion-collapse collapse" data-bs-parent="#faq">
+                        <div class="accordion-body">
+                            No — Netflix Tudum is an independent, educational front-end/back-end practice project and is not affiliated with or endorsed by Netflix, Inc.
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
+</main>
 
-    <!-- MAIN CONTENT -->
-    <main class="container-fluid bg-dark text-white">
-        <section class="content-section" id="trending">
-            <div class="container">
-                <div class="intro-box mb-5">
-                    <h2 class="section-heading">Why Choose Us?</h2>
-                    <p class="lead">
-                        Experience the best entertainment platform with thousands of shows and movies, updated daily. Stream anytime, anywhere!
-                    </p>
-                </div>
+{% include "_footer.html" %}
+{% include "_show_modal.html" %}
 
-                <!-- CAROUSEL -->
-                <h3 class="section-heading">Trending Now</h3>
+<script type="application/json" id="show-catalog">{{ shows_json|safe }}</script>
 
-                <div id="netflixCarousel" class="carousel slide mb-5" data-bs-ride="carousel">
-                    <div class="carousel-indicators">
-                        <button type="button" data-bs-target="#netflixCarousel" data-bs-slide-to="0" class="active"></button>
-                        <button type="button" data-bs-target="#netflixCarousel" data-bs-slide-to="1"></button>
-                        <button type="button" data-bs-target="#netflixCarousel" data-bs-slide-to="2"></button>
-                    </div>
-                    <div class="carousel-inner">
-                        <div class="carousel-item active">
-                            <img src="https://wallpaperaccess.com/full/1605492.jpg" class="d-block w-100 carousel-img" alt="Dark">
-                            <div class="carousel-caption">
-                                <h5>Dark</h5>
-                                <p>A mind-bending masterpiece</p>
-                            </div>
-                        </div>
-                        <div class="carousel-item">
-                            <img src="https://wallpaperaccess.com/full/2353129.jpg" class="d-block w-100 carousel-img" alt="Stranger Things">
-                            <div class="carousel-caption">
-                                <h5>Stranger Things</h5>
-                                <p>Supernatural mystery series</p>
-                            </div>
-                        </div>
-                        <div class="carousel-item">
-                            <img src="https://wallpaperaccess.com/full/1705865.jpg" class="d-block w-100 carousel-img" alt="Mindhunter">
-                            <div class="carousel-caption">
-                                <h5>Mindhunter</h5>
-                                <p>Psychological crime thriller</p>
-                            </div>
-                        </div>
-                    </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#netflixCarousel" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon"></span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#netflixCarousel" data-bs-slide="next">
-                        <span class="carousel-control-next-icon"></span>
-                    </button>
-                </div>
-
-                <!-- CARDS -->
-                <h3 class="section-heading">Netflix Tudum shows</h3>
-                <div class="row g-4 mb-5">
-                    <div class="col-lg-4">
-                        <div class="card netflix-card h-100">
-                            <img src="https://wallpaperaccess.com/full/1705896.jpg" class="card-img-top" alt="Mindhunter">
-                            <div class="card-body d-flex flex-column">
-                                <h5 class="card-title">Mindhunter</h5>
-                                <p class="card-text flex-grow-1">Psychological crime thriller series.</p>
-                                <button class="btn btn-danger btn-sm">
-                                    <i class="fas fa-play"></i> <a href="https://www.netflix.com/title/80117551" target="_blank" class="btn btn-danger btn-sm">Watch Now</a>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="card netflix-card h-100">
-                            <img src="https://wallpaperaccess.com/full/3627082.jpg" class="card-img-top" alt="Dark">
-                            <div class="card-body d-flex flex-column">
-                                <h5 class="card-title">Dark</h5>
-                                <p class="card-text flex-grow-1">Mind-bending time travel series.</p>
-                                <button class="btn btn-danger btn-sm">
-                                    <i class="fas fa-play"></i> <a href="https://www.netflix.com/title/80100172" target="_blank" class="btn btn-danger btn-sm">>Watch Now</a>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="card netflix-card h-100">
-                            <img src="https://m.gettywallpapers.com/wp-content/uploads/2023/12/4k-Eleven-Stranger-Things-Background-For-PC.jpg" class="card-img-top" alt="Stranger Things">
-                            <div class="card-body d-flex flex-column">
-                                <h5 class="card-title">Stranger Things</h5>
-                                <p class="card-text flex-grow-1">Supernatural mystery and adventure.</p>
-                                <button class="btn btn-danger btn-sm">
-                                    <i class="fas fa-play"></i> <a href="https://www.netflix.com/title/80057281" target="_blank" class="btn btn-danger btn-sm">Watch Now</a>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="card netflix-card h-100">
-                            <img src="https://wallpapercave.com/wp/wp1930597.jpg" class="card-img-top" alt="Better Call Saul">
-                            <div class="card-body d-flex flex-column">
-                                <h5 class="card-title">Better Call Saul</h5>
-                                <p class="card-text flex-grow-1">The legal and criminal exploits of Jimmy McGill.</p>
-                                <button class="btn btn-danger btn-sm">
-                                    <i class="fas fa-play"></i> <a href="https://www.netflix.com/title/80021955" target="_blank" class="btn btn-danger btn-sm">Watch Now</a>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="card netflix-card h-100">
-                            <img src="https://wallpapercave.com/wp/wp1892386.jpg" class="card-img-top" alt="The Walking Dead">
-                            <div class="card-body d-flex flex-column">
-                                <h5 class="card-title">The Walking Dead</h5>
-                                <p class="card-text flex-grow-1">Post-apocalyptic zombie survival drama.</p>
-                                <button class="btn btn-danger btn-sm">
-                                    <i class="fas fa-play"></i> <a href="https://www.netflix.com/title/70177057" target="_blank" class="btn btn-danger btn-sm">Watch Now</a>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="card netflix-card h-100">
-                            <img src="https://wallpapercave.com/wp/wp5626427.jpg" class="card-img-top" alt="Ragnarok">
-                            <div class="card-body d-flex flex-column">
-                                <h5 class="card-title">Ragnarok</h5>
-                                <p class="card-text flex-grow-1">Norse mythology meets modern drama.</p>
-                                <button class="btn btn-danger btn-sm">
-                                    <i class="fas fa-play"></i> <a href="https://www.netflix.com/title/80236468" target="_blank" class="btn btn-danger btn-sm">Watch Now</a>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- FAQ Section Restored -->
-                <h3 class="section-heading">Frequently Asked Questions</h3>
-                <div class="accordion mb-5" id="faq">
-                    <div class="accordion-item">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button" data-bs-toggle="collapse" data-bs-target="#q1">
-                                <i class="fas fa-question-circle me-2"></i> What is Netflix Tudum?
-                            </button>
-                        </h2>
-                        <div id="q1" class="accordion-collapse collapse show" data-bs-parent="#faq">
-                            <div class="accordion-body">
-                                Netflix Tudum is a premium streaming service offering thousands of movies and TV shows, including originals, documentaries, and more. Watch anytime, anywhere!
-                            </div>
-                        </div>
-                    </div>
-                    <div class="accordion-item">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#q2">
-                                <i class="fas fa-question-circle me-2"></i> Is Netflix Tudum free?
-                            </button>
-                        </h2>
-                        <div id="q2" class="accordion-collapse collapse" data-bs-parent="#faq">
-                            <div class="accordion-body">
-                                Netflix Tudum offers flexible subscription plans for all budgets. Start with a free trial today and experience premium entertainment!
-                            </div>
-                        </div>
-                    </div>
-                    <div class="accordion-item">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#q3">
-                                <i class="fas fa-question-circle me-2"></i> Can I watch on multiple devices?
-                            </button>
-                        </h2>
-                        <div id="q3" class="accordion-collapse collapse" data-bs-parent="#faq">
-                            <div class="accordion-body">
-                                Yes! Netflix Tudum allows you to stream on multiple devices simultaneously depending on your subscription plan.
-                            </div>
-                        </div>
-                    </div>
-                    <div class="accordion-item">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#q4">
-                                <i class="fas fa-question-circle me-2"></i> Can I cancel anytime?
-                            </button>
-                        </h2>
-                        <div id="q4" class="accordion-collapse collapse" data-bs-parent="#faq">
-                            <div class="accordion-body">
-                                Absolutely! You can cancel your subscription anytime without any hidden fees or complications.
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- FOOTER -->
-    <footer class="bg-dark text-white py-5">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4 mb-4">
-                    <h5><i class="fas fa-play-circle"></i> Netflix Tudum</h5>
-                    <p class="text-muted">Your ultimate entertainment destination</p>
-                </div>
-                <div class="col-md-4 mb-4">
-                    <h6>Quick Links</h6>
-                    <ul class="list-unstyled">
-                        <li><a href="{% url 'home' %}" class="text-muted text-decoration-none">Home</a></li>
-                        <li><a href="{% url 'about' %}" class="text-muted text-decoration-none">About</a></li>
-                        <li><a href="{% url 'contact' %}" class="text-muted text-decoration-none">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-4 mb-4">
-                    <h6>Follow Us</h6>
-                    <div>
-                        <a href="#" class="text-danger me-3"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="text-danger me-3"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="text-danger me-3"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="text-danger"><i class="fab fa-youtube"></i></a>
-                    </div>
-                </div>
-            </div>
-            <hr class="bg-secondary">
-            <div class="text-center text-muted">
-                <p>&copy; 2026 Netflix Tudum. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{% static 'js/main.js' %}"></script>
 </body>
 </html>

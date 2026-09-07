@@ -1,0 +1,27 @@
+<div class="show-card reveal"
+     data-id="{{ show.id }}"
+     data-title="{{ show.title|lower }}"
+     data-genre="{{ show.genre }}">
+    <div class="show-card-media">
+        <img src="{{ show.poster_url }}" alt="{{ show.title }}" loading="lazy">
+        <div class="show-card-overlay">
+            <div class="show-card-actions">
+                <button type="button" class="icon-btn play-btn" data-id="{{ show.id }}" title="More info">
+                    <i class="fas fa-play"></i>
+                </button>
+                <button type="button" class="icon-btn list-btn" data-id="{{ show.id }}" title="Add to My List">
+                    <i class="fas fa-plus"></i>
+                </button>
+                <button type="button" class="icon-btn info-btn" data-id="{{ show.id }}" title="More info">
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+            </div>
+            <p class="show-card-title">{{ show.title }}</p>
+            <div class="show-card-meta">
+                <span class="match-badge">{{ show.match_score }}% Match</span>
+                <span class="maturity-badge">{{ show.maturity_rating }}</span>
+                <span class="year-badge">{{ show.release_year }}</span>
+            </div>
+        </div>
+    </div>
+</div>

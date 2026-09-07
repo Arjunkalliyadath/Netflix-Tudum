@@ -1,0 +1,19 @@
+# Optional Render "Blueprint" file.
+# You don't need this if you're already managing the service by hand in the
+# Render dashboard - just copy the buildCommand/startCommand below into your
+# existing service's settings. This file only matters if you use
+# "New +" -> "Blueprint" on Render and point it at this repo.
+services:
+  - type: web
+    name: netflix-tudum
+    runtime: python
+    plan: free
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn config.wsgi:application"
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DJANGO_DEBUG
+        value: "False"
+      - key: PYTHON_VERSION
+        value: "3.12.3"

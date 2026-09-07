@@ -1,0 +1,35 @@
+<div class="modal fade" id="showDetailModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content show-modal-content">
+            <button type="button" class="btn-close btn-close-white show-modal-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="show-modal-banner">
+                <img id="modalBackdrop" src="" alt="">
+                <div class="show-modal-banner-fade"></div>
+                <div class="show-modal-banner-content">
+                    <h2 id="modalTitle"></h2>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <a href="#" id="modalWatchBtn" target="_blank" rel="noopener" class="btn btn-light btn-lg fw-bold">
+                            <i class="fas fa-play me-2"></i>Watch on Netflix
+                        </a>
+                        <button type="button" id="modalListBtn" class="btn btn-outline-light btn-lg icon-circle-btn" title="Add to My List">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body show-modal-body">
+                <div class="show-modal-meta">
+                    <span class="modal-match" id="modalMatch"></span>
+                    <span id="modalYear"></span>
+                    <span class="modal-maturity" id="modalMaturity"></span>
+                    <span id="modalSeasons"></span>
+                    <span class="genre-pill" id="modalGenre"></span>
+                </div>
+                <p class="modal-tagline" id="modalTagline"></p>
+                <p class="modal-description" id="modalDescription"></p>
+                <p class="modal-cast"><span class="text-muted">Cast: </span><span id="modalCast"></span></p>
+                <p class="modal-creator"><span class="text-muted">Creator: </span><span id="modalCreator"></span></p>
+            </div>
+        </div>
+    </div>
+</div>
