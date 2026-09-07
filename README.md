@@ -1,3 +1,4 @@
+
 # 🎬 Netflix Tudum — Django Web Application
 
 ## 🚀 Live Demo
@@ -5,7 +6,7 @@
 
 > Educational parody project. Not affiliated with, endorsed by, or connected to Netflix, Inc. in any way.
 
----
+https://github.com/user-attachments/assets/e88f4d18-1f65-4fcd-9687-bab5f583d93a
 
 ## 📌 About the Project
 
