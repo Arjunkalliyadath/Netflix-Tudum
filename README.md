@@ -143,5 +143,6 @@ Although this is a web project, it demonstrates:
 
 ## 👨‍💻 Author
 
-**Arjun Kalliyadath**
-GitHub: https://github.com/Arjunkalliyadath
+**Arjun K**
+- GitHub: [@Arjunkalliyadath](https://github.com/Arjunkalliyadath)
+- Email: arjunkalliyadath2001@gmail.com
